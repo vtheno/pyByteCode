@@ -1,0 +1,10 @@
+*** Learning python virtual machine bytecode and use it in python
+    - usage:
+    #+BEGIN_SRC python
+      @let( {'a':1,'b':2 } )
+      def add():
+          return a + b
+      print( add )
+      print( add() )
+          
+    #+END_SRC
