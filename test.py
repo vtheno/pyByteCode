@@ -23,10 +23,10 @@ def acc():
     c = a + b
     return c + a + b
 import timeit
-t = 100000
+t = 100#0#0000
 t1 = timeit.timeit('add()',globals={'add':add},number=t)
 t2 = timeit.timeit('add()',globals={'add':app},number=t)
 t3 = timeit.timeit('add()',globals={'add':acc,'a':1,'b':2},number=t)
-print( t1 * 100 )
-print( t2 * 100 )
-print( t3 * 100 )
+print( t1 * 1000000 )
+print( t2 * 1000000 )
+print( t3 * 1000000 )
