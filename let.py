@@ -80,12 +80,14 @@ class let(object):
         return function
     def __repr__(self):
         return "Where ({}) => {}".format(self.env,self.func)
+def example():
+    @let({'a':666})
+    def test():
+        return a
+        
+    dis.dis(test)
+    showCodeInfo(test.__code__)
+    print( test )
+    print( test() )
+__all__ = ["let"]
 
-@let({'a':666})
-def test():
-    return a
-
-dis.dis(test)
-#showCodeInfo(test.__code__)
-print( test )
-print( test() )
