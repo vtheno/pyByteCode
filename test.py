@@ -26,7 +26,7 @@ import timeit
 t = 100#0#0000
 t1 = timeit.timeit('add()',globals={'add':add},number=t)
 t2 = timeit.timeit('add()',globals={'add':app},number=t)
-t3 = timeit.timeit('add()',globals={'add':acc,'a':1,'b':2},number=t)
+#t3 = timeit.timeit('add()',globals={'add':acc,'a':1,'b':2},number=t)
 print( t1 * 1000000 )
 print( t2 * 1000000 )
-print( t3 * 1000000 )
+#print( t3 * 1000000 )

@@ -15,21 +15,6 @@ def showCodeInfo(co):
 class let(object):
     def __init__(self,env):
         self.env = env
-    def findArgument(self,lst,target):
-        newlst = [ ]
-        for i in range(len(lst)):
-            if lst[i] == target:
-                newlst += [i]
-        return newlst
-    def replaceBinlst(self,lst,index,source,target,value):
-        newlst = [ ]
-        for i in range(len(lst)):
-            if lst[i] == source:
-                newlst += [target]
-                lst[i+1] = value
-            else:
-                newlst += [lst[i]]
-        return newlst
     def genCode(self,old_const,old_varnames):
         length_c = len(list(old_const))
         length_v = len(list(old_varnames))
@@ -42,7 +27,7 @@ class let(object):
     def processGlobals(self,lst,names,varnames):
         #print( lst )            # LOAD_GLOBAL => 116
         #print( names )
-        ts = self.findArgument(lst,opcode.opmap["LOAD_GLOBAL"])
+        ts = list(filter( lambda i: lst[i] == opcode.opmap["LOAD_GLOBAL"] ,range(len(lst))))
         #print( ts )
         #print( t!=None )
         for t in ts:
@@ -63,16 +48,16 @@ class let(object):
         lstbin = self.processGlobals(binlst,_code_.co_names,varnames)
         genCo = self.genCode(_code_.co_consts,_code_.co_varnames)
         lstbin = genCo + lstbin
-        consts = tuple( list(_code_.co_consts) + [v for v in self.env.values()] )
+        consts = list(_code_.co_consts) + [v for v in self.env.values()] 
         code = CodeType(_code_.co_argcount,       # argcount
                         _code_.co_kwonlyargcount, # kwonlyargcount
                         nlocals,                  # nlocals
                         _code_.co_stacksize,      # stacksize
                         _code_.co_flags,          # flags
                         bytes(lstbin),            # codestring
-                        consts,                   # consts
+                        tuple(consts),            # consts
                         _code_.co_names,          # names
-                        tuple(varnames),                 # varnames
+                        tuple(varnames),          # varnames
                         _code_.co_filename,       # filename
                         _code_.co_name,           # name
                         _code_.co_firstlineno,    # firstlineno
@@ -80,7 +65,7 @@ class let(object):
                         _code_.co_freevars,       # freevars
                         _code_.co_cellvars,       # cellvars
                     )
-        _globals_.update(self.env)
+        #_globals_.update(self.env)
         function = FunctionType(code,_globals_)
         return function
     def __repr__(self):
