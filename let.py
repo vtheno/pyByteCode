@@ -16,11 +16,12 @@ class let(object):
     def __init__(self,env):
         self.env = env
     def findArgument(self,lst,target):
+        newlst = [ ]
         for i in range(len(lst)):
             if lst[i] == target:
-                return lst[i+1]
-        return None
-    def replaceBinlst(self,lst,source,target,value):
+                newlst += [i]
+        return newlst
+    def replaceBinlst(self,lst,index,source,target,value):
         newlst = [ ]
         for i in range(len(lst)):
             if lst[i] == source:
@@ -37,16 +38,20 @@ class let(object):
         for i in range(len(keys)):
             code += [opcode.opmap["LOAD_CONST"],length_c + i,
                      opcode.opmap["STORE_FAST"],length_v + i]
-        #print( "genCode:",code )
         return code
     def processGlobals(self,lst,names,varnames):
         #print( lst )            # LOAD_GLOBAL => 116
         #print( names )
-        t = self.findArgument(lst,opcode.opmap["LOAD_GLOBAL"])
-        #print( t )
-        if t and self.env.get(names[t]) :
-            return self.replaceBinlst(lst,opcode.opmap["LOAD_GLOBAL"],opcode.opmap["LOAD_FAST"]
-                                      ,varnames.index(names[t]))
+        ts = self.findArgument(lst,opcode.opmap["LOAD_GLOBAL"])
+        #print( ts )
+        #print( t!=None )
+        for t in ts:
+            i = lst[t+1]
+            #print(i)
+            if self.env.get(names[i]) :
+                if lst[t] == opcode.opmap["LOAD_GLOBAL"]:
+                    lst[t] = opcode.opmap["LOAD_FAST"]
+                    lst[t+1] = varnames.index(names[i])
         return lst
     def __call__(self,func):
         self.func = func
