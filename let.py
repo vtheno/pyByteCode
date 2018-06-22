@@ -3,6 +3,8 @@ import dis
 import opcode
 from types import CodeType
 from types import FunctionType
+# co_varnames ( first argument , other local name
+# co_nlocals  ( length co_varnames
 
 def showCodeInfo(co):
     print( " --------start------- ")

@@ -1,0 +1,45 @@
+https://docs.python.org/3/library/inspect.html?highlight=co_flags
+
+inspect.CO_OPTIMIZED
+
+    代码对象使用快速本地进行优化。
+
+inspect.CO_NEWLOCALS
+
+    如果设置，当代码对象执行时，将为框架的f_locals创建一个新的字典。
+
+inspect.CO_VARARGS
+
+    代码对象具有可变的位置参数（* args-like）。
+
+inspect.CO_VARKEYWORDS
+
+    代码对象有一个可变的关键字参数（** kwargs-like）。
+
+inspect.CO_NESTED
+
+    当代码对象是嵌套函数时，该标志被设置。
+
+inspect.CO_GENERATOR
+
+    当代码对象是生成器函数时，该标志被设置，即当代码对象被执行时返回生成器对象。
+
+inspect.CO_NOFREE
+
+    如果没有空闲或单元变量，则标志被设置。
+
+inspect.CO_COROUTINE
+
+    当代码对象是协程函数时，标志被设置。当代码对象被执行时，它返回一个协程对象。有关更多详细信息，请参阅PEP 492。
+
+    3.5版本中的新功能。
+
+inspect.CO_ITERABLE_COROUTINE
+
+    该标志用于将发生器转换为基于生成器的协程。具有此标志的发生器对象可用于等待表达式，并可从协程对象中产生。有关更多详细信息，请参阅PEP 492。
+
+    3.5版本中的新功能。
+
+inspect.CO_ASYNC_GENERATOR
+
+    当代码对象是异步生成器函数时，该标志被设置。当代码对象被执行时，它返回一个异步生成器对象。有关更多详细信息，请参阅PEP 525。

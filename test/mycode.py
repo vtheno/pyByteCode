@@ -106,7 +106,6 @@ c = CodeType(0,            # argcount
 )
 print( eval(c) )
 showCodeInfo(c)
-# co_varnames ( first argument , other local name
 def setf(variable,value):
     temp = value
     variable = temp
@@ -140,4 +139,5 @@ ss = FunctionType(s,# code
               )
 print( "----------" )
 print( ss(a,1) )
+
 
