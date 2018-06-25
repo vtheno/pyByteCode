@@ -5,11 +5,11 @@ from opcode import opmap
 from opcode import opname
 import dis
 def typcheck(v,typ):
-    #print(v,typ)
+    print(v,typ)
     if isinstance(v,typ):
         return v
     else:
-        raise TypeError("\n\t \033[0;31;43m Fail isinstance ({},{}) \033[0m".format(repr(v),typ.__name__))
+        raise TypeError("\n\t \033[0;31;43m Fail isinstance ({},{}) \033[0m".format(v,typ.__name__))
 
 def check(func):
     _globals_ = func.__globals__
@@ -29,17 +29,20 @@ def check(func):
     lst = [ ]
     n = o_argcount
     i = 0
-    while n :
-        t = o_binlst[i+1]
-        lst += [opmap["LOAD_CONST"],len(n_consts)-1,
-                o_binlst[i],t,
-                opmap["LOAD_CONST"],n_consts.index( info[t] ),
-                opmap["CALL_FUNCTION"],2,
-                opmap["POP_TOP"],0 ]
-        i += 2
-        n -=1
+    for c in range(len(o_binlst)):
+        x = o_binlst[c]
+        t = o_binlst[c+1]
+        if x == opmap["LOAD_FAST"] and i == t and n > 0:
+            lst += [opmap["LOAD_CONST"],len(n_consts)-1,
+                    o_binlst[c],t,
+                    opmap["LOAD_CONST"],n_consts.index( info[t] ),
+                    opmap["CALL_FUNCTION"],2,
+                    opmap["POP_TOP"],0 ]
+            i+=1
+            n-=1
+        if n == 0:
+            break
     n = len(o_binlst) - 2
-    i = 0
     #        ------------
     # func   ^ stack top 
     # result | 
@@ -77,9 +80,4 @@ def check(func):
     #print( lstbin )
     return FunctionType(code,_globals_)
 
-#@check
-#def add(a : int ,b : int) -> object:
-#    return a + b
-
-#print( add(1,2) )
 __all__ = ["check"]
