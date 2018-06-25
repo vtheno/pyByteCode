@@ -28,7 +28,6 @@ def check(func):
     o_argcount = _code_.co_argcount
     lst = [ ]
     n = o_argcount
-    i = 0
     for c in range(len(o_binlst)):
         x = o_binlst[c]
         t = o_binlst[c+1]
@@ -38,7 +37,6 @@ def check(func):
                     opmap["LOAD_CONST"],n_consts.index( info[t] ),
                     opmap["CALL_FUNCTION"],2,
                     opmap["POP_TOP"],0 ]
-            i+=1
             n-=1
         if n == 0:
             break
