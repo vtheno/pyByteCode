@@ -63,7 +63,7 @@ def make():
 add = make()
 print( add )
 print( add() ) 
-"""
+#"""
 filename     = 'newfile.pyc'
 magic_number = imp.get_magic()
 gen_time     = struct.pack('i',int(time.time()))
@@ -74,4 +74,4 @@ with open(filename,'wb') as f:
     f.write(gen_time)
     f.write(padding)
     f.write(data)
-"""
+#"""
