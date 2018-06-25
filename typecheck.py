@@ -28,18 +28,12 @@ def check(func):
     o_argcount = _code_.co_argcount
     lst = [ ]
     n = o_argcount
-    for c in range(len(o_binlst)):
-        x = o_binlst[c]
-        t = o_binlst[c+1]
-        if x == opmap["LOAD_FAST"] and i == t and n > 0:
-            lst += [opmap["LOAD_CONST"],len(n_consts)-1,
-                    o_binlst[c],t,
-                    opmap["LOAD_CONST"],n_consts.index( info[t] ),
-                    opmap["CALL_FUNCTION"],2,
-                    opmap["POP_TOP"],0 ]
-            n-=1
-        if n == 0:
-            break
+    for i in range(n):
+        lst += [opmap["LOAD_CONST"],len(n_consts)-1,
+                opmap["LOAD_FAST"],i,
+                opmap["LOAD_CONST"],n_consts.index( info[i] ),
+                opmap["CALL_FUNCTION"],2,
+                opmap["POP_TOP"],0 ]
     n = len(o_binlst) - 2
     #        ------------
     # func   ^ stack top 
