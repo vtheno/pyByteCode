@@ -5,7 +5,6 @@ from opcode import opmap
 from opcode import opname
 import dis
 def typcheck(v,typ):
-    #print(v,typ)
     if isinstance(v,typ):
         return v
     else:
@@ -34,6 +33,18 @@ def check(func):
                 opmap["LOAD_CONST"],n_consts.index( info[i] ),
                 opmap["CALL_FUNCTION"],2,
                 opmap["POP_TOP"],0 ]
+    jumps = [opmap["JUMP_FORWARD"],
+             opmap["POP_JUMP_IF_FALSE"],
+             opmap["POP_JUMP_IF_TRUE"],
+             opmap["JUMP_IF_TRUE_OR_POP"],
+             opmap["JUMP_IF_FALSE_OR_POP"],
+             opmap["JUMP_ABSOLUTE"]]
+    OffSet = len(lst)
+    for i in range(len(o_binlst)) :
+        target = o_binlst[i]
+        if target in jumps:
+            o_binlst[i+1] += OffSet
+    
     n = len(o_binlst) - 2
     #        ------------
     # func   ^ stack top 
