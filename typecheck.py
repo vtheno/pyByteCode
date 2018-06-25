@@ -5,11 +5,11 @@ from opcode import opmap
 from opcode import opname
 import dis
 def typcheck(v,typ):
-    print(v,typ)
+    #print(v,typ)
     if isinstance(v,typ):
         return v
     else:
-        raise TypeError("\n\t \033[0;31;43m Fail isinstance ({},{}) \033[0m".format(v,typ.__name__))
+        raise TypeError("\n\t \033[0;31;43m Fail isinstance ({},{}) \033[0m".format(repr(v),typ.__name__))
 
 def check(func):
     _globals_ = func.__globals__

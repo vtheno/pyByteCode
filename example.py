@@ -4,7 +4,7 @@ import dis
 @check
 def add(a:int,b:int) -> int:
     " add : int * int -> int "
-    return a + str(b)
+    return str(a) + str(b)
 dis.dis(add)
 print ( add )
 help(add)
