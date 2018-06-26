@@ -13,7 +13,7 @@ print ( add(1,2) )
 
 
 @check
-def tup(a:int,b:object) -> Tuple(int,object):
+def tup(a:object,b:object) -> object:
     return (a,b)
 
 #print( isinstance(tup,Arrow(Tuple(int,object),Tuple(int,object))) )
@@ -21,7 +21,7 @@ def tup(a:int,b:object) -> Tuple(int,object):
 
 
 @check
-def foldl( func : Arrow(Tuple(int,object),Tuple(int,object)),
+def foldl( func : Arrow(Tuple(object,object),object),
            acc  : Tuple(int,object),
            lst  : List(int)  ) -> Tuple(int,object) :
     if lst == [ ]:
@@ -40,3 +40,5 @@ def Sum(lst : List(int),acc :int) -> int :
     return Sum(lst[1:],acc + 1)
 #dis.dis(Sum)
 print( Sum( [1,2,3,4,5] ,0) )
+
+

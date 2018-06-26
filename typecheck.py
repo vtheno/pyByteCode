@@ -39,12 +39,12 @@ def check(func):
                 opmap["LOAD_CONST"],n_consts.index( info[i] ),
                 opmap["CALL_FUNCTION"],2,
                 opmap["POP_TOP"],0 ]
-    jumps = [opmap["JUMP_FORWARD"],
-             opmap["POP_JUMP_IF_FALSE"],
+    jumps = [opmap["POP_JUMP_IF_FALSE"],
              opmap["POP_JUMP_IF_TRUE"],
              opmap["JUMP_IF_TRUE_OR_POP"],
              opmap["JUMP_IF_FALSE_OR_POP"],
              opmap["JUMP_ABSOLUTE"]]
+    jump_forward = opmap["JUMP_FORWARD"]
     OffSet = len(mlst)
     #        ------------
     # func   ^ stack top 
@@ -65,7 +65,7 @@ def check(func):
         new_binlst[i] = [-1,new_binlst[i]]
         new_binlst[i+1] = [-1,new_binlst[i+1]]
     acc = [ ]
-    while lst :  # 在 dis
+    while lst :
         op,arg = lst[0],lst[1]
         if op == opmap["RETURN_VALUE"]:
             acc += last
@@ -73,7 +73,7 @@ def check(func):
             acc += [op,arg]
         lst = lst[2:]
     new_binlst = mlst + acc
-    #print( acc )
+
     new_addrs = list()
     for i in range(len(new_binlst)):
         op = new_binlst[i]
@@ -81,14 +81,12 @@ def check(func):
             new_addrs += [i]
             new_binlst[i] = new_binlst[i][1]
             new_binlst[i+1] = new_binlst[i+1][1]
-    #print( acc )
-    #print( old_addrs,new_addrs )
     for i in range(len(new_binlst)):
         op = new_binlst[i]
         if op in jumps:
             new_binlst[i+1] = new_addrs[0]
             new_addrs = new_addrs[1:]
-    #print( new_binlst )
+
     lstbin = new_binlst
     code = CodeType(_code_.co_argcount,       # argcount
                     _code_.co_kwonlyargcount, # kwonlyargcount
