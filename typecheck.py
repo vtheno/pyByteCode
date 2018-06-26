@@ -5,14 +5,20 @@ from opcode import opmap
 from opcode import opname
 import dis
 def typcheck(v,typ):
+    #print( "typcheck:",v,type(v),typ)
     if isinstance(v,typ):
+        #print( v, typ )
         return v
     else:
-        raise TypeError("\n\t \033[0;31;43m Fail isinstance ({},{}) \033[0m".format(repr(v),typ.__name__))
+        raise TypeError("\n\t \033[0;31;43m Fail isinstance ({},{}) \033[0m".format(repr(v),repr(typ)))
 
 def check(func):
     _globals_ = func.__globals__
-    typs = func.__annotations__.copy()
+    temp = {}
+    old_annotations = {}
+    temp.update(func.__annotations__)
+    old_annotations.update(func.__annotations__)
+    typs = temp
     ret = typs.pop('return')
     _code_ = func.__code__
     o_varnames = list(_code_.co_varnames)
@@ -25,10 +31,10 @@ def check(func):
         info[o_varnames.index(k)] = v
     o_binlst = list( _code_.co_code )
     o_argcount = _code_.co_argcount
-    lst = [ ]
+    mlst = [ ]
     n = o_argcount
     for i in range(n):
-        lst += [opmap["LOAD_CONST"],len(n_consts)-1,
+        mlst += [opmap["LOAD_CONST"],len(n_consts)-1,
                 opmap["LOAD_FAST"],i,
                 opmap["LOAD_CONST"],n_consts.index( info[i] ),
                 opmap["CALL_FUNCTION"],2,
@@ -39,28 +45,51 @@ def check(func):
              opmap["JUMP_IF_TRUE_OR_POP"],
              opmap["JUMP_IF_FALSE_OR_POP"],
              opmap["JUMP_ABSOLUTE"]]
-    OffSet = len(lst)
-    for i in range(len(o_binlst)) :
-        target = o_binlst[i]
-        if target in jumps:
-            o_binlst[i+1] += OffSet
-    
-    n = len(o_binlst) - 2
+    OffSet = len(mlst)
     #        ------------
     # func   ^ stack top 
     # result | 
     last = [ opmap["LOAD_CONST"],len(n_consts)-1,
              opmap["ROT_TWO"],0,# Swaps the two top-most stack items.
              opmap["LOAD_CONST"],n_consts.index( ret ),
-             opmap["CALL_FUNCTION"],2
-    ]
-    while n < len(o_binlst) :
-        t = o_binlst[n + 1]
-        last += [o_binlst[n],t]
-        n +=2
-
-    o_binlst = o_binlst[0:len(o_binlst)-2]
-    lstbin = lst + o_binlst + last
+             opmap["CALL_FUNCTION"],2,
+             opmap["RETURN_VALUE"],0]
+    new_binlst = o_binlst
+    lset = len(last) - 2
+    old_addrs = list()
+    for i in range(len(o_binlst)):
+        if o_binlst[i] in jumps:
+            old_addrs+= [ o_binlst[i+1] ]
+    lst = new_binlst
+    for i in old_addrs:
+        new_binlst[i] = [-1,new_binlst[i]]
+        new_binlst[i+1] = [-1,new_binlst[i+1]]
+    acc = [ ]
+    while lst :  # 在 dis
+        op,arg = lst[0],lst[1]
+        if op == opmap["RETURN_VALUE"]:
+            acc += last
+        else:
+            acc += [op,arg]
+        lst = lst[2:]
+    new_binlst = mlst + acc
+    #print( acc )
+    new_addrs = list()
+    for i in range(len(new_binlst)):
+        op = new_binlst[i]
+        if isinstance(op,list):
+            new_addrs += [i]
+            new_binlst[i] = new_binlst[i][1]
+            new_binlst[i+1] = new_binlst[i+1][1]
+    #print( acc )
+    #print( old_addrs,new_addrs )
+    for i in range(len(new_binlst)):
+        op = new_binlst[i]
+        if op in jumps:
+            new_binlst[i+1] = new_addrs[0]
+            new_addrs = new_addrs[1:]
+    #print( new_binlst )
+    lstbin = new_binlst
     code = CodeType(_code_.co_argcount,       # argcount
                     _code_.co_kwonlyargcount, # kwonlyargcount
                     _code_.co_nlocals,        # nlocals
@@ -81,6 +110,8 @@ def check(func):
     #dis.dis(code)
     #dis.show_code(code)
     #print( lstbin )
-    return FunctionType(code,_globals_)
+    func  = FunctionType(code,_globals_)
+    func.__annotations__= old_annotations
+    return func
 
 __all__ = ["check"]
